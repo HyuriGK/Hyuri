@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Header com Opções de Página</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+    header {
+        background-color: #333;
+        color: white;
+        padding: 1px;
+        text-align: center;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: #555;
+        padding: 5px;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 5px;
+    }
+    nav a:hover {
+        background-color: #777;
+    }
+    table {
+        width: 90%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 10px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .current-day {
+        background-color: #d3d3d3;
+    }
+    .date-time {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 15px;
+        color: #666;
+    }
+    #dropdown {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 210px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdid {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdid-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdid-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdid-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdud {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdud-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 190px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdud-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdud-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdond {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdond-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdond-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdond-content a:hover {
+        background-color: #f1f1f1;
+    }
+    iframe {
+    margin-top: 5px;
+    }
+    #btnProducao {
+        position: absolute;
+        top: 170px;
+        min-width: 280px;
+        right: 1710px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #btnProducao:hover {
+        background-color: #45a049;
+    }
+    #btnRefugo {
+        position: absolute;
+        top: 170px;
+        min-width: 280px;
+        right: 33px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #btnRefugo:hover {
+        background-color: #f44336;
+    }
+    #lista-producoes {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    #lista-producoes li {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    #lista-producoes li span {
+        cursor: pointer;
+        color: red;
+        margin-left: 5px;
+    }
+    #lista-refugos {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    #lista-refugos li {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    #lista-refugos li span {
+        cursor: pointer;
+        color: red;
+        margin-left: 5px;
+    }
+    canvas {
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        display: block;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>DASHBOARD REBARBAÇÃO</h1>
+</header>
+<div id="refugoInfo"></div>
+<div id="ultimas-producoes">
+    <ul id="lista-producoes"></ul>
+</div>
+<div id="ultimos-refugos">
+    <ul id="lista-refugos"></ul>
+</div>
+<nav>
+    <a href="menu.html">Menu</a>
+    <a href="https://alunosatcedu-my.sharepoint.com/:x:/r/personal/hyuri_1303511_alunosatc_edu_br/_layouts/15/Doc.aspx?sourcedoc=%7BDFE0518B-138D-4895-8D3A-AA92CF9D9DCE%7D&file=FICHA%20DE%20PROCESSO%20-%20REBARBA%C3%87%C3%83O.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&login_hint=hyuri.1303511%40alunosatc.edu.br&ct=1712946800488&wdOrigin=OFFICECOM-WEB.START.EDGEWORTH&cid=b5f7e2c9-1f91-496e-8825-90d46ccaa272&wdPreviousSessionSrc=HarmonyWeb&wdPreviousSession=fa4c98b0-cc9e-48e9-b103-7492b265318e" target="_blank">Ficha de Processo</a>
+    <div id="dropdid" onmouseover="showDropdid()" onmouseout="hideDropdid()">
+        <a href="#">Kanban &#9660;</a>
+        <div id="dropdid-content">
+            <a href="kanban_diarioo.html">Kanban Diário</a>
+            <a href="kanban_project.html">Kanban Project</a>
+        </div>
+    </div>
+    <div id="dropdown" onmouseover="showDropdown()" onmouseout="hideDropdown()">
+        <a href="#">Registro &#9660;</a>
+        <div id="dropdown-content">
+            <a href="registro.html">Registro Ficha</a>
+            <a href="https://docs.google.com/spreadsheets/d/1D3FRZ1YS23_lCwhP0dKbYaJVvUp_LByw_BsUX4IK7sA/edit#gid=0"target=_blank">Registro Produção</a>
+            <a href="carga.html" target="_blank">Rebarbação Terceiro</a>
+            <a href="concat.html"target=_blank">Painel Concat</a>
+        </div>
+    </div>
+    <div id="dropdud" onmouseover="showDropdud()" onmouseout="hideDropdud()">
+        <a href="#">Relatórios &#9660;</a>
+        <div id="dropdud-content">
+            <a href="https://lookerstudio.google.com/reporting/f7e699bc-6977-4ca3-915f-43ca2754d0ca" target="_blank">Relatório Ficha</a>
+            <a href="https://lookerstudio.google.com/reporting/3ba5cee4-7938-43a2-aa68-c286299fcd04/page/UrQwD"target=_blank">Relatório Produção</a>
+        </div>
+    </div>
+    <div id="dropdond" onmouseover="showDropdond()" onmouseout="hideDropdond()">
+        <a href="#">Ficha &#9660;</a>
+        <div id="dropdond-content">
+            <a href="ificha.html">Ficha Padrão</a>
+        </div>
+    </div>
+</nav>
+
+<iframe src="https://app.powerbi.com/reportEmbed?reportId=ae9f450a-8798-4af7-93d6-fe2f07660c36&autoAuth=true&ctid=922829a3-3e93-4d68-9335-e3d04788755d" width="100%" height="823,9px" frameborder="0"></iframe>
+
+<div class="date-time" id="current-time"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Função para exibir as últimas produções registradas
+    function exibirUltimasProducoes() {
+        let producoes = localStorage.getItem('producoes');
+        if (producoes) {
+            producoes = JSON.parse(producoes);
+            const listaProducoes = document.getElementById('lista-producoes');
+            listaProducoes.innerHTML = '';
+            producoes.forEach((producao, index) => {
+                const li = document.createElement('li');
+                li.textContent = producao;
+                // Adicionar ícone de exclusão
+                const spanExcluir = document.createElement('span');
+                spanExcluir.textContent = ' X';
+                spanExcluir.style.cursor = 'pointer';
+                spanExcluir.addEventListener('click', () => {
+                    producoes.splice(index, 1); // Remover item da lista
+                    localStorage.setItem('producoes', JSON.stringify(producoes));
+                    exibirUltimasProducoes(); // Atualizar a exibição
+                    atualizarGraficoProducao(producoes); // Atualizar o gráfico
+                });
+                li.appendChild(spanExcluir);
+                listaProducoes.appendChild(li);
+            });
+            atualizarGraficoProducao(producoes); // Atualizar o gráfico inicialmente
+        }
+    }
+
+    // Função para exibir os últimos refugos registrados
+    function exibirUltimosRefugos() {
+        let refugos = localStorage.getItem('refugos');
+        if (refugos) {
+            refugos = JSON.parse(refugos);
+            const listaRefugos = document.getElementById('lista-refugos');
+            listaRefugos.innerHTML = '';
+            refugos.forEach((refugo, index) => {
+                const li = document.createElement('li');
+                li.textContent = refugo;
+                // Adicionar ícone de exclusão
+                const spanExcluir = document.createElement('span');
+                spanExcluir.textContent = ' X';
+                spanExcluir.style.cursor = 'pointer';
+                spanExcluir.addEventListener('click', () => {
+                    refugos.splice(index, 1); // Remover item da lista
+                    localStorage.setItem('refugos', JSON.stringify(refugos));
+                    exibirUltimosRefugos(); // Atualizar a exibição
+                    atualizarGraficoRefugo(refugos); // Atualizar o gráfico
+                });
+                li.appendChild(spanExcluir);
+                listaRefugos.appendChild(li);
+            });
+            atualizarGraficoRefugo(refugos); // Atualizar o gráfico inicialmente
+        }
+    }
+
+    // Função para atualizar o gráfico de produção por dia
+    function atualizarGraficoProducao(producoes) {
+        const ctx = document.getElementById('graficoProducao').getContext('2d');
+        const labels = [];
+        const data = [];
+        producoes.forEach(producao => {
+            const [dataProducao, kgProduzidos] = producao.split(' - ');
+            const day = dataProducao.split('/')[0];
+            labels.push(day);
+            data.push(parseFloat(kgProduzidos));
+        });
+        const chart = new Chart(ctx, {
+            type: 'bar', // Alteração para gráfico de coluna
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Produção por Dia',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                    pointHoverBorderWidth: 2,
+                    pointLabelFontSize: 12,
+                    pointLabelFontColor: '#333'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Função para atualizar o gráfico de refugo por dia
+    function atualizarGraficoRefugo(refugos) {
+        const ctx = document.getElementById('graficoRefugo').getContext('2d');
+        const labels = [];
+        const data = [];
+        refugos.forEach(refugo => {
+            const [dataRefugo, kgRefugados] = refugo.split(' - ');
+            const day = dataRefugo.split('/')[0];
+            labels.push(day);
+            data.push(parseFloat(kgRefugados));
+        });
+        const chart = new Chart(ctx, {
+            type: 'bar', // Alteração para gráfico de coluna
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Refugo por Dia',
+                    data: data,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+                    pointHoverBorderWidth: 2,
+                    pointLabelFontSize: 12,
+                    pointLabelFontColor: '#333'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Função para registrar uma nova produção
+    function registrarProducao() {
+        const producao = prompt("Digite o valor produzido na última produção:");
+        if (producao !== null) {
+            const dataProducao = prompt("Digite a data da produção (DD/MM/AAAA):");
+            if (dataProducao !== null) {
+                let producoes = localStorage.getItem('producoes');
+                if (!producoes) {
+                    producoes = [];
+                } else {
+                    producoes = JSON.parse(producoes);
+                }
+                producoes.push(`${dataProducao} - ${producao} kg`);
+                localStorage.setItem('producoes', JSON.stringify(producoes));
+                exibirUltimasProducoes();
+            }
+        }
+    }
+
+    // Função para registrar um novo refugo
+    function registrarRefugo() {
+        const refugo = prompt("Digite o valor refugado na última produção:");
+        if (refugo !== null) {
+            const dataRefugo = prompt("Digite a data do refugo (DD/MM/AAAA):");
+            if (dataRefugo !== null) {
+                let refugos = localStorage.getItem('refugos');
+                if (!refugos) {
+                    refugos = [];
+                } else {
+                    refugos = JSON.parse(refugos);
+                }
+                refugos.push(`${dataRefugo} - ${refugo} kg`);
+                localStorage.setItem('refugos', JSON.stringify(refugos));
+                exibirUltimosRefugos();
+            }
+        }
+    }
+
+    // Função para exibir data e hora atualizadas
+    function exibirDataHora() {
+        const date = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('current-time').textContent = date.toLocaleDateString('pt-BR', options);
+    }
+
+    // Função para exibir o dropdown de Kanban
+    function showDropdown() {
+        document.getElementById('dropdown-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdown de Kanban
+    function hideDropdown() {
+        document.getElementById('dropdown-content').style.display = 'none';
+    }
+
+    // Função para exibir o dropdid de Kanban
+    function showDropdid() {
+        document.getElementById('dropdid-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdid de Kanban
+    function hideDropdid() {
+        document.getElementById('dropdid-content').style.display = 'none';
+    }
+
+    // Função para exibir o dropdud de Kanban
+    function showDropdud() {
+        document.getElementById('dropdud-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdud de Kanban
+    function hideDropdud() {
+        document.getElementById('dropdud-content').style.display = 'none';
+    }
+
+    // Função para exibir o dropdond de Kanban
+    function showDropdond() {
+        document.getElementById('dropdond-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdond de Kanban
+    function hideDropdond() {
+        document.getElementById('dropdond-content').style.display = 'none';
+    }
+
+    // Evento de clique no botão de registrar produção
+    document.getElementById('btnProducao').addEventListener('click', registrarProducao);
+
+    // Evento de clique no botão de registrar refugo
+    document.getElementById('btnRefugo').addEventListener('click', registrarRefugo);
+
+    // Inicialização: exibir últimas produções e refugos, e atualizar data e hora
+    exibirUltimasProducoes();
+    exibirUltimosRefugos();
+    exibirDataHora();
+    setInterval(exibirDataHora, 1000); // Atualizar a cada segundo
+</script>
+</body>
+</html>
