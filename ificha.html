@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Ficha de Processo</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #f0f0f0; /* cor de fundo */
+    }
+    body {
+        padding: 0; /* removido o espaçamento interno */
+        font-family: Arial, sans-serif;
+    }
+    header {
+        background-color: #333;
+        color: white;
+        padding: 1px;
+        text-align: center;
+    }
+    iframe {
+        width: 90%;
+        height: 80%;
+        border: 1px solid #ccc; /* borda */
+        margin: 10px auto; /* centraliza o iframe */
+        display: block; /* garante que o iframe seja exibido como um bloco */
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: #555;
+        padding: 5px;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 5px;
+    }
+    nav a:hover {
+        background-color: #777;
+    }
+    .dashboard {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+    .widget {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        flex: 1;
+        margin: 0 10px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    /* Estilos para o fundo de desfoque */
+    .overlay {
+        display: none; /* esconde o elemento inicialmente */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* cor do fundo com transparência */
+        backdrop-filter: blur(5px); /* efeito de desfoque */
+        justify-content: center;
+        align-items: center;
+        z-index: 999; /* z-index alto para ficar acima de outros elementos */
+    }
+    .message {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #555;
+    }
+    #dropdown {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 210px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdid {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdid-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdid-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdid-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdud {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdud-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 190px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdud-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdud-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdond {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdond-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdond-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdond-content a:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>DASHBOARD REBARBAÇÃO</h1>
+</header>
+<nav>
+    <a href="menu.html">Menu</a>
+    <a href="https://alunosatcedu-my.sharepoint.com/:x:/r/personal/hyuri_1303511_alunosatc_edu_br/_layouts/15/Doc.aspx?sourcedoc=%7BDFE0518B-138D-4895-8D3A-AA92CF9D9DCE%7D&file=FICHA%20DE%20PROCESSO%20-%20REBARBA%C3%87%C3%83O.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&login_hint=hyuri.1303511%40alunosatc.edu.br&ct=1712946800488&wdOrigin=OFFICECOM-WEB.START.EDGEWORTH&cid=b5f7e2c9-1f91-496e-8825-90d46ccaa272&wdPreviousSessionSrc=HarmonyWeb&wdPreviousSession=fa4c98b0-cc9e-48e9-b103-7492b265318e" target="_blank">Ficha de Processo</a>
+    <div id="dropdid" onmouseover="showDropdid()" onmouseout="hideDropdid()">
+        <a href="#">Kanban &#9660;</a>
+        <div id="dropdid-content">
+            <a href="kanban_diarioo.html">Kanban Diário</a>
+            <a href="kanban_project.html">Kanban Project</a>
+        </div>
+    </div>
+    <div id="dropdown" onmouseover="showDropdown()" onmouseout="hideDropdown()">
+        <a href="#">Registro &#9660;</a>
+        <div id="dropdown-content">
+            <a href="registro.html">Registro Ficha</a>
+            <a href="https://docs.google.com/spreadsheets/d/1D3FRZ1YS23_lCwhP0dKbYaJVvUp_LByw_BsUX4IK7sA/edit#gid=0"target=_blank">Registro Produção</a>
+            <a href="carga.html" target="_blank">Rebarbação Terceiro</a>
+            <a href="concat.html"target=_blank">Painel Concat</a>
+        </div>
+    </div>
+    <div id="dropdud" onmouseover="showDropdud()" onmouseout="hideDropdud()">
+        <a href="#">Relatórios &#9660;</a>
+        <div id="dropdud-content">
+            <a href="https://lookerstudio.google.com/reporting/f7e699bc-6977-4ca3-915f-43ca2754d0ca" target="_blank">Relatório Ficha</a>
+            <a href="https://lookerstudio.google.com/reporting/3ba5cee4-7938-43a2-aa68-c286299fcd04/page/UrQwD"target=_blank">Relatório Produção</a>
+        </div>
+    </div>
+    <div id="dropdond" onmouseover="showDropdond()" onmouseout="hideDropdond()">
+        <a href="#">Ficha &#9660;</a>
+        <div id="dropdond-content">
+            <a href="ificha.html">Ficha Padrão</a>
+        </div>
+    </div>
+</nav>
+<iframe src="file:///C:/Users/hyuri.dasilva/Desktop/DASH/FICHA1.pdf"></iframe>
+<div class="dashboard">
+    <div class="widget">
+        <h2>Dados da Planilha</h2>
+        <table id="sheet-data"></table>
+    </div>
+</div>
+
+</div>
+
+<script>
+    // ID da planilha do Google Sheets
+    const sheetId = '1VMz94htI2YyruFp0JdQdiRd6po-sz0-19xe1-a3WzAQ';
+    // Intervalo de células a serem recuperadas
+    const range = 'B1:G1000';
+    // URL da API do Google Sheets
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=SUA_CHAVE_DE_API`;
+
+    // Função para fazer a requisição à API do Google Sheets e exibir os dados na tabela
+    function fetchSheetData() {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const values = data.values;
+                const table = document.getElementById('sheet-data');
+
+                // Cria as linhas da tabela com os dados das células
+                values.forEach(rowData => {
+                    const row = document.createElement('tr');
+                    rowData.forEach(cellData => {
+                        const cell = document.createElement('td');
+                        cell.textContent = cellData;
+                        row.appendChild(cell);
+                    });
+                    table.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Erro ao recuperar dados da planilha:', error));
+    }
+
+    // Chama a função para recuperar os dados da planilha
+    function showDropdown() {
+        var dropdownContent = document.getElementById('dropdown-content');
+        dropdownContent.style.display = 'block';
+    }
+
+    function hideDropdown() {
+        var dropdownContent = document.getElementById('dropdown-content');
+        dropdownContent.style.display = 'none';
+    }
+
+function showDropdid() {
+        var dropdidContent = document.getElementById('dropdid-content');
+        dropdidContent.style.display = 'block';
+    }
+
+    function hideDropdid() {
+        var dropdidContent = document.getElementById('dropdid-content');
+        dropdidContent.style.display = 'none';
+    }
+
+    function showDropdud() {
+        document.getElementById('dropdud-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdud de Kanban
+    function hideDropdud() {
+        document.getElementById('dropdud-content').style.display = 'none';
+    }
+
+    // Função para exibir o dropdond de Kanban
+    function showDropdond() {
+        document.getElementById('dropdond-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdond de Kanban
+    function hideDropdond() {
+        document.getElementById('dropdond-content').style.display = 'none';
+    }
+
+    fetchSheetData();
+
+    function acceptZoom() {
+        // Implemente aqui a lógica para aceitar o zoom alterado
+        // Por exemplo, esconder a mensagem de zoom alterado
+        document.getElementById('overlay').style.display = 'none';
+    }
+
+    function rejectZoom() {
+        // Implemente aqui a lógica para não aceitar o zoom alterado
+        // Por exemplo, redirecionar para o menu
+        window.location.href = 'menu.html';
+    }
+
+    // Mostra a mensagem de zoom alterado
+    document.getElementById('overlay').style.display = 'flex';
+</script>
+</body>
+</html>

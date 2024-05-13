@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabela de Carga</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    /* Add some basic styling for the popup form */
+    .popup-form {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+      display: none;
+    }
+    .popup-form.show {
+      display: block;
+    }
+    /* Position the add button */
+    #add-row-btn {
+      position: absolute;
+      top: 800px;
+      right: 30px; /* Adjusted position to accommodate the remove button */
+      padding: 20px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #add-row-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Position the remove button */
+    .remove-row-btn {
+      padding: 6px 10px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Position the total weight panel */
+    #total-weight-panel {
+      font-size: 18px;
+      position: absolute;
+      bottom: 10px;
+      left: 30px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px; /* Added margin to separate the panels */
+    }
+    #total-quantity-panel {
+      font-size: 18px;
+      position: absolute;
+      bottom: 10px;
+      left: 240px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px; /* Added margin to separate the panels */
+    }
+    /* Position the average delivery time panel */
+    #average-delivery-time-panel {
+      font-size: 18px;
+      position: absolute;
+      bottom: 10px;
+      left: 490px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px; /* Added margin to separate the panels */
+    }
+    /* Position the average production per day panel */
+    #average-production-panel {
+      font-size: 18px;
+      position: absolute;
+      bottom: 10px;
+      left: 730px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <figure>
+    <table id="carga-table">
+      <thead>
+        <tr>
+          <th scope="col">CARGA</th>
+          <th scope="col">TERCEIRO</th>
+          <th scope="col">QUANTIDADE TOTAL (UN)</th>
+          <th scope="col">PESO TOTAL (KG)</th>
+          <th scope="col">DATA DE COLETA</th>
+          <th scope="col">PREVISÃO DE ENTREGA</th>
+          <th scope="col">DATA DE ENTREGA</th>
+          <th scope="col">TEMPO DE CICLO (DIAS)</th>
+          <th scope="col">REMOVER</th>
+        </tr>
+      </thead>
+      <tbody id="carga-table-body">
+        <!-- table data will go here -->
+      </tbody>
+    </table>
+    <button id="add-row-btn">Adicionar Carga</button>
+    <div class="popup-form" id="popup-form">
+      <h2>Adicionar Carga</h2>
+      <form>
+        <label for="carga">CARGA:</label>
+        <input type="text" id="carga" name="carga"><br><br>
+        <label for="terceiro">TERCEIRO:</label>
+        <select id="terceiro" name="terceiro">
+          <option value="">Selecione...</option>
+          <option value="P & F Rebarbação">P & F Rebarbação</option>
+        </select><br><br>
+        <label for="quantidade-total">QUANTIDADE TOTAL (UN):</label>
+        <input type="number" id="quantidade-total" name="quantidade-total"><br><br>
+        <label for="peso-total">PESO TOTAL (KG):</label>
+        <input type="number" id="peso-total" name="peso-total"><br><br>
+        <label for="data-coleta">DATA DE COLETA:</label>
+        <input type="date" id="data-coleta" name="data-coleta"><br><br>
+        <label for="previsao-entrega">PREVISÃO DE ENTREGA:</label>
+        <input type="date" id="previsao-entrega" name="previsao-entrega"><br><br>
+        <label for="data-entrega">DATA DE ENTREGA:</label>
+        <input type="date" id="data-entrega" name="data-entrega"><br><br>
+        <button type="submit">Adicionar linha</button>
+      </form>
+    </div>
+    <div id="total-weight-panel"></div>
+    <div id="total-quantity-panel"></div>
+    <div id="average-delivery-time-panel"></div>
+    <div id="average-production-panel"></div>
+  </figure>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tableBody = document.getElementById('carga-table-body');
+      const data = JSON.parse(localStorage.getItem('cargaData')) || [];
+      data.forEach((rowData) => {
+        addRow(rowData);
+      });
+
+      // Calculate and display total weight, quantity, average delivery time, and average production per day when the page loads
+      updateTotalWeightPanel();
+      updateTotalQuantityPanel();
+      updateAverageDeliveryTimePanel();
+      updateAverageProductionPanel();
+    });
+
+    const addButton = document.getElementById('add-row-btn');
+    addButton.addEventListener('click', () => {
+      document.getElementById('popup-form').classList.add('show');
+    });
+
+    document.getElementById('popup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const rowData = {
+        carga: document.getElementById('carga').value,
+        terceiro: document.getElementById('terceiro').value,
+        'quantidade-total': document.getElementById('quantidade-total').value,
+        'peso-total': document.getElementById('peso-total').value,
+        'data-coleta': document.getElementById('data-coleta').value,
+        'previsao-entrega': document.getElementById('previsao-entrega').value,
+        'data-entrega': document.getElementById('data-entrega').value
+      };
+      addRow(rowData);
+      document.getElementById('popup-form').classList.remove('show');
+      const data = JSON.parse(localStorage.getItem('cargaData')) || [];
+      data.push(rowData);
+      localStorage.setItem('cargaData', JSON.stringify(data));
+      updateTotalWeightPanel(); // Update total weight, quantity, average delivery time, and average production per day after adding a row
+      updateTotalQuantityPanel();
+      updateAverageDeliveryTimePanel();
+      updateAverageProductionPanel();
+    });
+
+    function addRow(rowData) {
+      const newRow = document.createElement('tr');
+      Object.entries(rowData).forEach(([key, value]) => {
+        const cell = document.createElement('td');
+        if (key === 'carga') {
+          const link = document.createElement('a');
+          link.href = value + '.html'; // Assuming the HTML file is named after the carga number
+          link.textContent = value;
+          cell.appendChild(link);
+        } else {
+          cell.textContent = value;
+        }
+        newRow.appendChild(cell);
+      });
+
+      const tempoCicloCell = document.createElement('td');
+      const dataColeta = new Date(rowData['data-coleta']);
+      const dataEntrega = new Date(rowData['data-entrega']);
+      const tempoCiclo = Math.ceil((dataEntrega - dataColeta) / (1000 * 60 * 60 * 24)); // Calculate the difference in days
+      tempoCicloCell.textContent = tempoCiclo;
+      newRow.appendChild(tempoCicloCell);
+
+      const removeCell = document.createElement('td');
+      const removeButton = document.createElement('button');
+      removeButton.classList.add('remove-row-btn');
+      removeButton.textContent = 'Remover';
+      removeButton.addEventListener('click', () => {
+        const cargaNumber = prompt('Digite o número da carga:');
+        if (cargaNumber) {
+          const rows = document.querySelectorAll('#carga-table-body tr');
+          rows.forEach((row) => {
+            const cargaCell = row.querySelector('td:first-child');
+            if (cargaCell.textContent.trim() === cargaNumber.trim()) {
+              row.remove();
+              const data = JSON.parse(localStorage.getItem('cargaData')) || [];
+              const newData = data.filter((item) => item.carga !== cargaNumber.trim());
+              localStorage.setItem('cargaData', JSON.stringify(newData));
+              updateTotalWeightPanel(); // Update total weight, quantity, average delivery time, and average production per day after removing a row
+              updateTotalQuantityPanel();
+              updateAverageDeliveryTimePanel();
+              updateAverageProductionPanel();
+            }
+          });
+        }
+      });
+      removeCell.appendChild(removeButton);
+      newRow.appendChild(removeCell);
+
+      document.getElementById('carga-table-body').appendChild(newRow);
+    }
+
+    function updateTotalWeightPanel() {
+      const totalWeight = Array.from(document.querySelectorAll('#carga-table-body td:nth-child(4)'))
+        .reduce((acc, td) => acc + parseInt(td.textContent || 0, 10), 0);
+      document.getElementById('total-weight-panel').textContent = `Peso Total: ${totalWeight} KG`;
+    }
+
+    function updateTotalQuantityPanel() {
+      const totalQuantity = Array.from(document.querySelectorAll('#carga-table-body td:nth-child(3)'))
+        .reduce((acc, td) => acc + parseInt(td.textContent || 0, 10), 0);
+      document.getElementById('total-quantity-panel').textContent = `Quantidade Total: ${totalQuantity} UN`;
+    }
+
+    function updateAverageDeliveryTimePanel() {
+      const deliveryTimes = Array.from(document.querySelectorAll('#carga-table-body td:nth-child(8)'))
+        .map(td => parseInt(td.textContent || 0, 10));
+      const averageDeliveryTime = deliveryTimes.reduce((acc, val) => acc + val, 0) / deliveryTimes.length || 0;
+      document.getElementById('average-delivery-time-panel').textContent = `Tempo Médio: ${averageDeliveryTime.toFixed(2)} Dias`;
+    }
+
+    function updateAverageProductionPanel() {
+      const totalWeight = Array.from(document.querySelectorAll('#carga-table-body td:nth-child(4)'))
+        .reduce((acc, td) => acc + parseInt(td.textContent || 0, 10), 0);
+      const totalDeliveryTime = Array.from(document.querySelectorAll('#carga-table-body td:nth-child(8)'))
+        .reduce((acc, td) => acc + parseInt(td.textContent || 0, 10), 0);
+      const averageProductionPerDay = totalWeight / totalDeliveryTime || 0;
+      document.getElementById('average-production-panel').textContent = `Produção Média: ${averageProductionPerDay.toFixed(2)} KG/dia`;
+    }
+  </script>
+</body>
+</html>

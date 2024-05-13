@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanban Diarioo</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #333;
+        color: white;
+        padding: 1px;
+        text-align: center;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: #555;
+        padding: 5px;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 5px;
+    }
+    nav a:hover {
+        background-color: #777;
+    }
+    .container {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+    }
+    .column {
+        flex: 1;
+        min-width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 0 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .column-header {
+        padding: 5px;
+        text-align: center;
+        font-weight: bold;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #ccc;
+        border-radius: 5px 5px 0 0;
+    }
+    .task {
+        position: relative;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: grab;
+    }
+    .task:hover {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .task::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 5px;
+        transform: translateY(-50%);
+        color: #999;
+        cursor: pointer;
+    }
+    .task .remove-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: #999;
+        cursor: pointer;
+        display: none;
+    }
+    .task:hover .remove-button {
+        display: block;
+    }
+    .add-task-button {
+        display: block;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .back-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    .back-button:hover {
+        background-color: #45a049;
+    }
+    .back-button-icon {
+        margin-right: 5px;
+    }
+    #dropdown {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 210px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdid {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdid-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdid-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdid-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdud {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdud-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 190px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdud-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdud-content a:hover {
+        background-color: #f1f1f1;
+    }
+    #dropdond {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    #dropdond-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 170px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #dropdond-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    #dropdond-content a:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>DASHBOARD REBARBAÇÃO</h1>
+</header>
+<nav>
+    <a href="menu.html">Menu</a>
+    <a href="https://alunosatcedu-my.sharepoint.com/:x:/r/personal/hyuri_1303511_alunosatc_edu_br/_layouts/15/Doc.aspx?sourcedoc=%7BDFE0518B-138D-4895-8D3A-AA92CF9D9DCE%7D&file=FICHA%20DE%20PROCESSO%20-%20REBARBA%C3%87%C3%83O.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1&login_hint=hyuri.1303511%40alunosatc.edu.br&ct=1712946800488&wdOrigin=OFFICECOM-WEB.START.EDGEWORTH&cid=b5f7e2c9-1f91-496e-8825-90d46ccaa272&wdPreviousSessionSrc=HarmonyWeb&wdPreviousSession=fa4c98b0-cc9e-48e9-b103-7492b265318e" target="_blank">Ficha de Processo</a>
+    <div id="dropdid" onmouseover="showDropdid()" onmouseout="hideDropdid()">
+        <a href="#">Kanban &#9660;</a>
+        <div id="dropdid-content">
+            <a href="kanban_diarioo.html">Kanban Diário</a>
+            <a href="kanban_project.html">Kanban Project</a>
+        </div>
+    </div>
+    <div id="dropdown" onmouseover="showDropdown()" onmouseout="hideDropdown()">
+        <a href="#">Registro &#9660;</a>
+        <div id="dropdown-content">
+            <a href="registro.html">Registro Ficha</a>
+            <a href="https://docs.google.com/spreadsheets/d/1D3FRZ1YS23_lCwhP0dKbYaJVvUp_LByw_BsUX4IK7sA/edit#gid=0"target=_blank">Registro Produção</a>
+            <a href="carga.html" target="_blank">Rebarbação Terceiro</a>
+            <a href="concat.html"target=_blank">Painel Concat</a>
+        </div>
+    </div>
+    <div id="dropdud" onmouseover="showDropdud()" onmouseout="hideDropdud()">
+        <a href="#">Relatórios &#9660;</a>
+        <div id="dropdud-content">
+            <a href="https://lookerstudio.google.com/reporting/f7e699bc-6977-4ca3-915f-43ca2754d0ca" target="_blank">Relatório Ficha</a>
+            <a href="https://lookerstudio.google.com/reporting/3ba5cee4-7938-43a2-aa68-c286299fcd04/page/UrQwD"target=_blank">Relatório Produção</a>
+        </div>
+    </div>
+    <div id="dropdond" onmouseover="showDropdond()" onmouseout="hideDropdond()">
+        <a href="#">Ficha &#9660;</a>
+        <div id="dropdond-content">
+            <a href="ificha.html">Ficha Padrão</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="column" id="todo-column-project" ondrop="drop(event, 'todo-column-project')" ondragover="allowDrop(event)">
+        <div class="column-header">To Do</div>
+        <button class="add-task-button" onclick="addTask('todo-column-project')">+</button>
+    </div>
+    <div class="column" id="in-progress-column-project" ondrop="drop(event, 'in-progress-column-project')" ondragover="allowDrop(event)">
+        <div class="column-header">In Progress</div>
+        <button class="add-task-button" onclick="addTask('in-progress-column-project')">+</button>
+    </div>
+    <div class="column" id="done-column-project" ondrop="drop(event, 'done-column-project')" ondragover="allowDrop(event)">
+        <div class="column-header">Done</div>
+        <button class="add-task-button" onclick="addTask('done-column-project')">+</button>
+    </div>
+</div>
+<a href="file:///C:/Users/hyuri.dasilva/Desktop/dash/menu.html" class="back-button">
+    <span class="back-button-icon">⬅</span> Voltar
+</a>
+<script>
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event, columnId) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text");
+    var task = document.getElementById(data);
+    var originalColumnId = task.parentElement.id;
+
+    if (originalColumnId !== columnId) {
+        task.parentElement.removeChild(task);
+        event.target.appendChild(task);
+        saveTasks(columnId);
+
+                // Remover o item do quadro original
+        saveTasks(originalColumnId);
+    }
+}
+
+function addTask(columnId) {
+    var column = document.getElementById(columnId);
+    var taskName = prompt("Enter task name:");
+    if (taskName) {
+        var newTask = document.createElement("div");
+        newTask.className = "task";
+        newTask.draggable = true;
+        newTask.id = "task-" + Math.random().toString(36).substring(7);
+        newTask.setAttribute("ondragstart", "drag(event)");
+        newTask.innerHTML = taskName + "<span class='remove-button' onclick='removeTask(this)'>X</span>";
+        column.insertBefore(newTask, column.lastChild);
+        saveTasks(columnId);
+    }
+}
+
+function removeTask(element) {
+    var columnId = element.parentElement.parentElement.id;
+    element.parentElement.remove();
+    saveTasks(columnId);
+}
+
+function saveTasks(columnId) {
+    var column = document.getElementById(columnId);
+    var taskList = [];
+    column.querySelectorAll(".task").forEach(function(task) {
+        // Obtém apenas o texto da tarefa
+        var taskText = task.childNodes[0].nodeValue.trim(); // Aqui estamos pegando o primeiro nó de texto da tarefa e removendo espaços em branco
+        taskList.push(taskText);
+    });
+    localStorage.setItem("d" + columnId, JSON.stringify(taskList));
+}
+
+function loadTasks() {
+    var columns = document.querySelectorAll(".column");
+    columns.forEach(function(column) {
+        var columnId = column.id;
+        var tasks = JSON.parse(localStorage.getItem("d" + columnId));
+        if (tasks) {
+            tasks.forEach(function(taskName) {
+                var newTask = document.createElement("div");
+                newTask.className = "task";
+                newTask.draggable = true;
+                newTask.id = "task-" + Math.random().toString(36).substring(7);
+                newTask.setAttribute("ondragstart", "drag(event)");
+                newTask.innerHTML = taskName + "<span class='remove-button' onclick='removeTask(this)'>X</span>";
+                column.insertBefore(newTask, column.lastChild);
+            });
+        }
+    });
+}
+
+function showDropdown() {
+    var dropdownContent = document.getElementById('dropdown-content');
+    dropdownContent.style.display = 'block';
+}
+
+function hideDropdown() {
+    var dropdownContent = document.getElementById('dropdown-content');
+    dropdownContent.style.display = 'none';
+}
+
+function showDropdid() {
+        var dropdidContent = document.getElementById('dropdid-content');
+        dropdidContent.style.display = 'block';
+    }
+
+    function hideDropdid() {
+        var dropdidContent = document.getElementById('dropdid-content');
+        dropdidContent.style.display = 'none';
+    }
+
+    // Função para exibir o dropdond de Kanban
+    function showDropdond() {
+        document.getElementById('dropdond-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdond de Kanban
+    function hideDropdond() {
+        document.getElementById('dropdond-content').style.display = 'none';
+    }
+
+// Função para exibir o dropdud de Kanban
+    function showDropdud() {
+        document.getElementById('dropdud-content').style.display = 'block';
+    }
+
+    // Função para esconder o dropdud de Kanban
+    function hideDropdud() {
+        document.getElementById('dropdud-content').style.display = 'none';
+    }
+
+loadTasks();
+</script>
+</body>
+</html>

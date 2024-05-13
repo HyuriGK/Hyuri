@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabela de Registros</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            z-index: 9999;
+        }
+
+        .popup input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .popup button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #addButton {
+            position: fixed;
+            right: 20px;
+            bottom: 60px;
+            z-index: 999;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #removeByCargaButton {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 13px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .descricao {
+            width: 30%;
+        }
+
+        .deleteButton {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #observacoes {
+            position: fixed;
+            bottom: 10px;
+            left: 20px;
+            width: 30%;
+            padding: 9px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            resize: vertical;
+        }
+
+        #somaPesoTotal {
+            position: fixed;
+            bottom: 10px;
+            left: 550px;
+            background-color: #f2f2f2;
+            padding: 18px;
+            border: 1px solid #ddd;
+            z-index: 9999;
+        }
+
+        #somaQuantidades {
+            position: fixed;
+            bottom: 10px;
+            left: 788px;
+            background-color: #f2f2f2;
+            padding: 18px;
+            border: 1px solid #ddd;
+            z-index: 9999;
+        }
+
+        #exportButton {
+            position: fixed;
+            right: 156px;
+            bottom: 20px;
+            z-index: 999;
+            background-color: #2196F3;
+            color: white;
+            padding: 30px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #backButton {
+            position: fixed;
+            right: 252px;
+            top: 722px;
+            z-index: 999;
+            background-color: #ff6400;
+            color: white;
+            padding: 30px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<table id="myTable">
+    <thead>
+        <tr>
+            <th>POSIÇÃO</th>
+            <th>CÓDIGO</th>
+            <th class="descricao">DESCRIÇÃO</th>
+            <th>QUANTIDADE (UN)</th>
+            <th>PESO UNITÁRIO (KG)</th>
+            <th>PESO TOTAL / ITEM (KG)</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+        <!-- Linhas de dados serão adicionadas aqui -->
+    </tbody>
+</table>
+
+<div class="popup" id="popup">
+    <input type="text" id="carga" placeholder="POSIÇÃO">
+    <input type="text" id="codigo" placeholder="CÓDIGO">
+    <input type="text" id="descricao" placeholder="DESCRIÇÃO">
+    <input type="text" id="quantidade" placeholder="QUANTIDADE">
+    <input type="text" id="peso_unitario" placeholder="PESO UNITÁRIO">
+    <button onclick="addRow()">Adicionar</button>
+</div>
+
+<button id="addButton" onclick="openPopup()">Adicionar Linha</button>
+
+<div class="popup" id="removePopup">
+    <input type="text" id="cargaToRemove" placeholder="Número da Posição">
+    <button onclick="removeRowByCarga()">Remover</button>
+</div>
+
+<button id="removeByCargaButton" onclick="document.getElementById('removePopup').style.display = 'block'">Remover Posição</button>
+
+<textarea id="observacoes" placeholder="Observações..."></textarea>
+
+<div id="somaPesoTotal">Peso da Carga: <span id="totalPeso"></span> KG</div>
+
+<div id="somaQuantidades">Quantidade Total: <span id="totalQuantidades"></span> UN</div>
+
+<button id="exportButton" onclick="exportTableAndObservacoesToTxt()">Exportar</button>
+
+<button id="backButton" onclick="window.location.href='carga.html'">Voltar</button>
+
+<script>
+    var tableBody = document.getElementById("tableBody");
+    var registros = JSON.parse(localStorage.getItem('0002')) || [];
+
+    registros.forEach(function(registro) {
+        addRowToTable(tableBody, registro);
+    });
+
+    atualizarPainelSoma();
+    atualizarPainelSomaQuantidades();
+
+    var observacoes = localStorage.getItem('obs2') || '';
+    document.getElementById('observacoes').value = observacoes;
+
+    window.onbeforeunload = function() {
+        var observacoesValue = document.getElementById('observacoes').value;
+        localStorage.setItem('obs2', observacoesValue);
+    };
+
+    function openPopup() {
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function calcularSomaPesoTotal() {
+        var total = 0;
+        for (var i = 0; i < registros.length; i++) {
+            total += parseFloat(registros[i].peso_total_item);
+        }
+        return total.toFixed(2);
+    }
+
+    function calcularSomaQuantidades() {
+        var total = 0;
+        for (var i = 0; i < registros.length; i++) {
+            total += parseInt(registros[i].quantidade);
+        }
+        return total;
+    }
+
+    function atualizarPainelSoma() {
+        var totalPeso = calcularSomaPesoTotal();
+        document.getElementById("totalPeso").textContent = totalPeso;
+    }
+
+    function atualizarPainelSomaQuantidades() {
+        var totalQuantidades = calcularSomaQuantidades();
+        document.getElementById("totalQuantidades").textContent = totalQuantidades;
+    }
+
+    function addRow() {
+        var carga = document.getElementById("carga").value;
+        var codigo = document.getElementById("codigo").value;
+        var descricao = document.getElementById("descricao").value;
+        var quantidade = document.getElementById("quantidade").value;
+        var peso_unitario = document.getElementById("peso_unitario").value;
+        var peso_total_item = (quantidade * peso_unitario).toFixed(2);
+
+        var registro = {
+            carga: carga,
+            codigo: codigo,
+            descricao: descricao,
+            quantidade: quantidade,
+            peso_unitario: peso_unitario,
+            peso_total_item: peso_total_item
+        };
+
+        registros.push(registro);
+        localStorage.setItem('0002', JSON.stringify(registros));
+
+        addRowToTable(tableBody, registro);
+        atualizarPainelSoma();
+        atualizarPainelSomaQuantidades();
+
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function addRowToTable(tableBody, registro) {
+        var row = tableBody.insertRow();
+        row.insertCell(0).textContent = registro.carga;
+        row.insertCell(1).textContent = registro.codigo;
+        row.insertCell(2).textContent = registro.descricao;
+        row.insertCell(3).textContent = registro.quantidade;
+        row.insertCell(4).textContent = registro.peso_unitario;
+        row.insertCell(5).textContent = registro.peso_total_item;
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'X';
+        deleteButton.className = 'deleteButton';
+        deleteButton.onclick = function() {
+            var index = registros.indexOf(registro);
+            registros.splice(index, 1);
+            localStorage.setItem('0002', JSON.stringify(registros));
+            tableBody.removeChild(row);
+            atualizarPainelSoma();
+            atualizarPainelSomaQuantidades();
+        };
+
+    }
+
+    function removeRowByCarga() {
+        var cargaToRemove = document.getElementById("cargaToRemove").value;
+        for (var i = 0; i < registros.length; i++) {
+            if (registros[i].carga === cargaToRemove) {
+                registros.splice(i, 1);
+                localStorage.setItem('0002', JSON.stringify(registros));
+                tableBody.deleteRow(i);
+                atualizarPainelSoma();
+                atualizarPainelSomaQuantidades();
+                break;
+            }
+        }
+        document.getElementById("removePopup").style.display = "none";
+    }
+
+    function exportTableAndObservacoesToTxt() {
+        var txtContent = "Observações:\n" + document.getElementById('observacoes').value + "\n\n";
+        txtContent += "POSIÇÃO\tCÓDIGO\tDESCRIÇÃO\tQUANTIDADE (UN)\tPESO UNITÁRIO (KG)\tPESO TOTAL / ITEM (KG)\n";
+
+        registros.forEach(function(registro) {
+            txtContent += `${registro.carga}\t${registro.codigo}\t${registro.descricao}\t${registro.quantidade}\t${registro.peso_unitario}\t${registro.peso_total_item}\n`;
+        });
+
+        var blob = new Blob([txtContent], { type: 'text/plain' });
+        var url = URL.createObjectURL(blob);
+
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'registros_e_observacoes.txt';
+        a.click();
+    }
+</script>
+
+</body>
+</html>

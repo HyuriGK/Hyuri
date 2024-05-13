@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #concatenated-values {
+      display: block;
+      margin: 0 auto;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Terceiro</th>
+        <th>Código</th>
+        <th>Peso/PC</th>
+        <th>Preço/KG</th>
+        <th>Preço/PC</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <select name="terceiro[]">
+            <option value="">Selecione</option>
+            <option value="21312 - P&F">21312 - P&F</option>
+            <!-- Add more options here -->
+          </select>
+        </td>
+        <td><input type="text" name="codigo[]"></td>
+        <td><input type="text" name="peso[]" oninput="calculatePrecoPC(this)"></td>
+        <td><input type="text" name="precoKG[]" value="R$0,90" readonly></td>
+        <td><input type="text" name="precoPC[]" readonly></td>
+        <td><button onclick="deleteRow(this)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <input type="text" id="concatenated-values" readonly style="width: 40%;">
+
+  <script>
+    function addRow() {
+      var table = document.getElementsByTagName("table")[0];
+      var row = table.insertRow(-1);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+      var cell4 = row.insertCell(3);
+      var cell5 = row.insertCell(4);
+      var cell6 = row.insertCell(5);
+      cell1.innerHTML = '<select name="terceiro[]"><option value="">Selecione</option><option value="P&F Rebarbação">P&F Rebarbação</option></select>';
+      cell2.innerHTML = '<input type="text" name="codigo[]">';
+      cell3.innerHTML = '<input type="text" name="peso[]" oninput="calculatePrecoPC(this)">';
+      cell4.innerHTML = '<input type="text" name="precoKG[]" value="R$0,90" readonly>';
+      cell5.innerHTML = '<input type="text" name="precoPC[]" readonly>';
+      cell6.innerHTML = '<button onclick="deleteRow(this)">Delete</button>';
+      updateConcatenatedValues();
+    }
+
+    function deleteRow(btn) {
+      var row = btn.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+      updateConcatenatedValues();
+    }
+
+    function calculatePrecoPC(input) {
+      var peso = parseFloat(input.value);
+      var precoKG = parseFloat(input.parentNode.nextElementSibling.children[0].value.replace("R$", "").replace(",", "."));
+      var precoPC = peso * precoKG;
+input.parentNode.nextElementSibling.nextElementSibling.children[0].value = "R$" + precoPC.toFixed(2).replace(".", ",");
+      updateConcatenatedValues();
+    }
+
+    function updateConcatenatedValues() {
+      var table = document.getElementsByTagName("table")[0];
+      var rows = table.rows;
+      var concatenatedValues = "";
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var cells = row.cells;
+        concatenatedValues += cells[0].children[0].value + " - ";
+        concatenatedValues += "ITEM: " + cells[1].children[0].value + " - ";
+        concatenatedValues += cells[3].children[0].value + "/KG - "; // Add /KG to Preço/KG
+        concatenatedValues += cells[4].children[0].value + "/PC\n"; // Add /PC to Preço/PC
+      }
+      document.getElementById("concatenated-values").value = concatenatedValues;
+    }
+  </script>
+</body>
+</html>
